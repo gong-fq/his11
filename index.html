@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英语史学术研究系统 - 龚凤乾教授设计</title>
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --accent-color: #2b6cb0;
+            --sidebar-bg: #1e293b;
+            --bg-color: #f1f5f9;
+        }
+        body { font-family: 'Times New Roman', serif, "Microsoft YaHei"; margin: 0; display: flex; height: 100vh; background: var(--bg-color); }
+
+        /* 侧边栏 */
+        .sidebar { width: 280px; background: var(--sidebar-bg); color: white; padding: 20px 0; overflow-y: auto; flex-shrink: 0; }
+        .sidebar h3 { padding: 0 20px; color: #94a3b8; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+        .time-link { display: block; padding: 10px 20px; color: #cbd5e1; text-decoration: none; border-left: 4px solid transparent; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
+        .time-link:hover, .time-link.active { background: #334155; color: white; border-left-color: var(--accent-color); }
+        .time-link small { display: block; font-size: 0.7rem; color: #64748b; margin-top: 2px; }
+
+        /* 主内容 */
+        .main-content { flex-grow: 1; overflow-y: auto; padding: 30px 50px; display: flex; flex-direction: column; gap: 25px; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h1 { margin: 0 0 15px 0; color: var(--primary-color); font-size: 1.8rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        textarea { width: 100%; height: 100px; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 1rem; margin: 15px 0; box-sizing: border-box; outline: none; transition: border-color 0.3s; }
+        
+        .btn-group { display: flex; gap: 10px; }
+        button { padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; border: none; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .btn-ask { background: var(--accent-color); color: white; }
+        .btn-read { background: #f1f5f9; color: var(--primary-color); border: 1px solid #cbd5e1; }
+
+        #response-box { min-height: 120px; padding: 20px; background: #fff; border-radius: 8px; border: 1px solid #e2e8f0; white-space: pre-wrap; line-height: 1.8; font-size: 1.05rem; margin-top: 15px; }
+
+        /* 动态参考文献联动 */
+        .ref-section { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .ref-card { background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; }
+        .ref-card strong { color: var(--primary-color); display: block; margin-bottom: 8px; border-bottom: 1px solid #f1f5f9; padding-bottom: 5px; font-size: 0.95rem; }
+        .ref-card ul { padding-left: 18px; margin: 0; color: #475569; font-size: 0.85rem; line-height: 1.6; }
+        .ref-card a { color: var(--accent-color); text-decoration: none; }
+
+        .typing::after { content: '|'; animation: blink 0.7s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <h3>Timeline of English / 英语史时间轴</h3>
+        <div onclick="updateContext(this, 'Pre-Roman & Celtic', 'Discuss Pre-Roman and Celtic linguistic features.', ['Russell: Celtic Languages', 'Jackson: Early Britain'], ['Celtic Digital Initiative', 'Wales Archive'])" class="time-link">Pre-Roman & Celtic<small>史前与凯尔特</small></div>
+        <div onclick="updateContext(this, 'Roman Britain', 'Explain the impact of Latin during Roman occupation.', ['Adams: Diversification of Latin', 'Rivet: Place-Names'], ['Roman Britain Online', 'Vindolanda Tablets'])" class="time-link">Roman Britain<small>罗马统治时期</small></div>
+        <div onclick="updateContext(this, 'Anglo-Saxon Era', 'What are characteristics of Old English?', ['Baugh & Cable: Ch. 3', 'Mitchell: Old English'], ['Electronic Beowulf', 'OE Newsletter'])" class="time-link">Anglo-Saxon Era<small>盎格鲁-撒克逊</small></div>
+        <div onclick="updateContext(this, 'The Middle Ages', 'Discuss Middle English development.', ['Burrow: Medieval English', 'Burnley: History of English'], ['ME Compendium', 'TEAMS Texts'])" class="time-link">The Middle Ages<small>中世纪盛期</small></div>
+        <div onclick="updateContext(this, 'The Tudors', 'Tudor period and English standardization.', ['Jones: Tudor Language', 'Görlach: Early Modern English'], ['Early English Books', 'Shakespeare\'s Words'])" class="time-link">The Tudors<small>都铎王朝</small></div>
+        <div onclick="updateContext(this, 'Stuart Period', 'Analyze Early Modern English during Stuart reign.', ['Wright: Standard English', 'Blake: Shakespeare Grammar'], ['King James Bible Archive', 'Newton Project'])" class="time-link">Stuart Period<small>斯图亚特王朝</small></div>
+        <div onclick="updateContext(this, 'Georgian Era', 'Linguistic shifts in the Georgian era.', ['Fitzgerald: Georgian Language', 'Percy: Oxford History'], ['Burney Collection', 'ESTC Catalogue'])" class="time-link">Georgian Era<small>乔治时代</small></div>
+        <div onclick="updateContext(this, 'Victorian Era', 'Vocabulary expansion in the Victorian era.', ['Mugglestone: Oxford History', 'Ammon: Victorian English'], ['Victorian Web', 'OED History'])" class="time-link">Victorian Era<small>维多利亚时代</small></div>
+        <div onclick="updateContext(this, 'Edwardian Era', 'Edwardian era linguistic features.', ['Crystal: Stories of English', 'Fowler: Language in News'], ['Edwardian Culture', 'BBC Edwardian Farm'])" class="time-link">Edwardian Era<small>爱德华时代</small></div>
+        <div onclick="updateContext(this, 'World Wars Era', 'Impact of World Wars on English.', ['Crystal: Language and Wars', 'Fussell: The Great War'], ['IWM Language', 'Wartime Slang Archive'])" class="time-link">World Wars Era<small>世界大战时期</small></div>
+        <div onclick="updateContext(this, 'Post-War Period', 'Rise of Global English post-1945.', ['Crystal: Global English', 'Kachru: The Other Tongue'], ['British Council: Effect', 'OED World Englishes'])" class="time-link">Post-War Period<small>战后重建</small></div>
+        <div onclick="updateContext(this, 'Thatcher Era', 'Social dialects during the Thatcher era.', ['Milroy: Authority in Language', 'Fairclough: Critical Discourse'], ['Thatcher Foundation', 'Sociolinguistics Lab'])" class="time-link">Thatcher Era<small>撒切尔时代</small></div>
+        <div onclick="updateContext(this, 'Modern Britain', 'Current trends in Modern British English.', ['Crystal: Making a Point', 'Thorne: Advanced English'], ['BBC Voices Project', 'BNC Corpus'])" class="time-link">Modern Britain<small>现代英国</small></div>
+    </nav>
+
+    <main class="main-content">
+        <div class="card">
+            <h1>Interactive Learning Zone / 互动学习区</h1>
+            <p style="color:#64748b; font-size: 0.85rem;">由龚凤乾教授精心设计。点击左侧分期自动推荐权威文献。</p>
+            
+            <textarea id="user-input" placeholder="请从左侧选择一个时期进行学术咨询..."></textarea>
+
+            <div class="btn-group">
+                <button class="btn-ask" onclick="askAI()">🚀 Ask DeepSeek</button>
+                <button class="btn-read" onclick="readPureText()">🔊 Read Content (语音净化)</button>
+            </div>
+
+            <h3 style="margin-top:20px; color: var(--primary-color);">Response / 智能解析：</h3>
+            <div id="response-box">等待指令输入...</div>
+        </div>
+
+        <div class="ref-section">
+            <div class="ref-card">
+                <strong>📚 Academic References:</strong>
+                <ul id="ref-books"><li>(请选择时期加载)</li></ul>
+            </div>
+            <div class="ref-card">
+                <strong>🌐 Online Resources:</strong>
+                <ul id="ref-web"><li>(请选择时期加载)</li></ul>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 更新内容与参考文献联动
+        function updateContext(element, period, prompt, books, links) {
+            document.querySelectorAll('.time-link').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            document.getElementById('user-input').value = prompt;
+
+            // 联动更新底部资源列表
+            document.getElementById('ref-books').innerHTML = books.map(b => `<li>${b}</li>`).join('');
+            document.getElementById('ref-web').innerHTML = links.map(l => `<li><a href="#" target="_blank">${l}</a></li>`).join('');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function askAI() {
+            const input = document.getElementById('user-input').value;
+            const box = document.getElementById('response-box');
+            if(!input.trim()) return alert("请输入问题。");
+
+            box.innerText = "Consulting academic archives...";
+            box.classList.add('typing');
+
+            try {
+                const res = await fetch("/.netlify/functions/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ question: input })
+                });
+                const data = await res.json();
+                
+                let i = 0; box.innerText = "";
+                function type() {
+                    if(i < data.answer.length) {
+                        box.innerText += data.answer.charAt(i++);
+                        setTimeout(type, 15);
+                    } else { box.classList.remove('typing'); }
+                }
+                type();
+            } catch (e) { 
+                box.innerText = "Error: 无法连接 AI 服务。请检查 Netlify Functions 部署状态。"; 
+                box.classList.remove('typing');
+            }
+        }
+
+        // 核心优化：语音净化逻辑
+        function readPureText() {
+            let text = window.getSelection().toString() || document.getElementById('response-box').innerText;
+            if(!text || text.includes("Consulting")) return;
+
+            // 正则净化：移除所有 *、#、 Emoji、特殊标点
+            text = text.replace(/[^\w\s\u4e00-\u9fa5，。？！；：“”（）(),.?!;:'"]/g, '');
+
+            const utter = new SpeechSynthesisUtterance(text);
+            const isChinese = /[\u4e00-\u9fa5]/.test(text);
+            
+            if(isChinese) {
+                utter.lang = 'zh-CN';
+                utter.rate = 0.9; // 优化中文阅读节奏
+            } else {
+                utter.lang = 'en-GB';
+                const voices = window.speechSynthesis.getVoices();
+                const gbVoice = voices.find(v => v.lang === 'en-GB' || v.name.includes('United Kingdom'));
+                if(gbVoice) utter.voice = gbVoice;
+                utter.rate = 0.85; 
+            }
+            
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(utter);
+        }
+
+        window.speechSynthesis.onvoiceschanged = () => { window.speechSynthesis.getVoices(); };
+    </script>
+</body>
+</html>
