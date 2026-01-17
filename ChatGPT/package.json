@@ -1,0 +1,8 @@
+{
+  "name": "english-history-app",
+  "version": "1.0.0",
+  "description": "Bilingual academic English history learning app",
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
